@@ -2,13 +2,19 @@ name := """payment-provider-app"""
 organization := "tiendanube"
 
 version := "1.0-SNAPSHOT"
-
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
-
 scalaVersion := "2.13.8"
 
-libraryDependencies += guice
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val scalaTestVersion = "3.2.2"
+
+libraryDependencies ++= Seq(
+  guice,
+  ws,
+
+  // Test dependencies
+  "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
+  "de.leanovate.play-mockws" %% "play-mockws" % "2.8.0" % Test
+)
 
 scalacOptions := Seq(
   "-encoding",
@@ -20,6 +26,7 @@ scalacOptions := Seq(
   "-language:implicitConversions",
   "-language:postfixOps",
   "-Ywarn-unused",
+  // "-Xfatal-warnings"
 )
 
 // Adds additional packages into Twirl

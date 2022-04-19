@@ -4,6 +4,12 @@ import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api.test._
 import play.api.test.Helpers._
+import mockws.{MockWS, MockWSHelpers}
+import play.api.libs.ws.WSClient
+import play.api.mvc.Results.Ok
+
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 /**
  * Add your spec here.
@@ -11,12 +17,16 @@ import play.api.test.Helpers._
  *
  * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
  */
-class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
+class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting with MockWSHelpers {
+
+  val ws: WSClient = MockWS {
+    case (GET, "/") => Action { Ok("homepage") }
+  }
 
   "HomeController GET" should {
 
     "render the index page from a new instance of controller" in {
-      val controller = new HomeController(stubControllerComponents())
+      val controller = new HomeController(ws, stubControllerComponents())
       val home = controller.index().apply(FakeRequest(GET, "/"))
 
       status(home) mustBe OK

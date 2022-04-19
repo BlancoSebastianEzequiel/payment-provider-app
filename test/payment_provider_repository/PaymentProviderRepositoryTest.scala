@@ -12,41 +12,40 @@ trait PaymentProviderRepositoryTest extends PlaySpec with ScalaFutures {
 
   def createId(): String = UUID.randomUUID.toString
 
-  "findLoyalty" should {
+  "find" should {
     "return nothing if the id does not exist" in {
       intercept[NoSuchFileException] { repository.find(createId()) }
     }
-    "return the loyalty if it exists" in {
-      val id = createId()
-      val paymentProvider = PaymentProvider(id, "token")
-      repository.save(paymentProvider)
-      val result = repository.find(id)
-      assert(result === paymentProvider)
-    }
-    "return the correct loyalty if multiples exist" in {
-      val id1 = createId()
-      val paymentProvider1 = PaymentProvider(id1, "token")
 
-      val id2 = createId()
-      val paymentProvider2 = PaymentProvider(id2, "token")
+    "return the provider if it exists" in {
+      val storeId = createId()
+      val paymentProvider = PaymentProvider("id", storeId, "token")
+      repository.save(paymentProvider)
+      assert(repository.find(storeId) === paymentProvider)
+    }
+
+    "return the correct provider if multiples exist" in {
+      val storeId1 = createId()
+      val paymentProvider1 = PaymentProvider("id1", storeId1, "token")
+
+      val storeId2 = createId()
+      val paymentProvider2 = PaymentProvider("id2", storeId2, "token")
 
       repository.save(paymentProvider1)
       repository.save(paymentProvider2)
-      val result = repository.find(id1)
-      assert(result === paymentProvider1)
+      assert(repository.find(storeId1) === paymentProvider1)
     }
   }
 
-  "updateLoyalty" should {
+  "save" should {
     "overwrite an existing value" in {
-      val id = createId()
-      val paymentProvider1 = PaymentProvider(id, "token1")
-      val paymentProvider2 = PaymentProvider(id, "token2")
+      val storeId = createId()
+      val paymentProvider1 = PaymentProvider("id", storeId, "token1")
+      val paymentProvider2 = PaymentProvider("id", storeId, "token2")
 
       repository.save(paymentProvider1)
       repository.save(paymentProvider2)
-      val result = repository.find(id)
-      assert(result === paymentProvider2)
+      assert(repository.find(storeId) === paymentProvider2)
     }
   }
 }

@@ -1,0 +1,35 @@
+{
+  "payment_provider_id": "{{payment_id}}",
+  "payment_method": {
+    "type": "credit_card",
+    "id": "visa"
+  },
+  "info": {
+    "card": {
+      "brand": "visa",
+      "expiration_month": 12,
+      "expiration_year": 2020,
+      "first_digits": "445566",
+      "last_digits": "1234",
+      "masked_number": "XXXXXXXXXXXX1234",
+      "name": "Ash Ketchum"
+    },
+    "installments": {
+      "quantity": 3,
+      "interest": "0.15"
+    },
+    "external_id": "1234",
+    "external_url": "https://mypayments.com/account/transactions/1234",
+    "ip": "192.168.0.25"
+  },
+  "first_event": {
+    "amount": {
+      "value": "{{total}}",
+      "currency": "{{currency}}"
+    },
+    "type": "sale",
+    "status": "success",
+    "failure_code": null,
+    "happened_at": "2020-01-25T12:30:15.000Z"
+  }
+}

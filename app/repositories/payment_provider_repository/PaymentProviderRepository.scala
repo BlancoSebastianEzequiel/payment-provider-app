@@ -5,6 +5,6 @@ import akka.Done
 case class PaymentProvider(id: String, storeId: String, token: String)
 
 trait PaymentProviderRepository {
-  def find(id: String): PaymentProvider
+  def find(storeId: String): PaymentProvider
   def save(paymentProvider: PaymentProvider): Done
 }

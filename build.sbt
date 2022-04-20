@@ -13,7 +13,8 @@ libraryDependencies ++= Seq(
 
   // Test dependencies
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
-  "de.leanovate.play-mockws" %% "play-mockws" % "2.8.0" % Test
+  "de.leanovate.play-mockws" %% "play-mockws" % "2.8.0" % Test,
+  "org.mockito" % "mockito-scala_2.11" % "0.3.0" % Test
 )
 
 scalacOptions := Seq(

@@ -23,7 +23,7 @@
  </check>
  <check level="error" class="org.scalastyle.scalariform.ObjectNamesChecker" enabled="true">
   <parameters>
-   <parameter name="regex">A-Z][A-Za-z]*</parameter>
+   <parameter name="regex">^[A-Z][A-Za-z]*$</parameter>
   </parameters>
  </check>
  <check level="error" class="org.scalastyle.scalariform.PackageObjectNamesChecker" enabled="true">

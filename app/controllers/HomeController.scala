@@ -6,7 +6,8 @@ import javax.inject._
 import play.api.mvc._
 import play.api.libs.ws.WSClient
 import repositories.payment_provider_repository.{FileBasedPaymentProviderRepository, PaymentProvider, PaymentProviderRepository}
-import services.PaymentProviderService
+import services.{AppAuthorizationService, PaymentProviderService}
+
 import java.nio.file.Paths
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
@@ -19,6 +20,7 @@ import scala.util.{Failure, Success, Try}
 class HomeController @Inject()(val ws: WSClient, val controllerComponents: ControllerComponents)(implicit ec: ExecutionContext) extends BaseController {
   val paymentProviderRepository: PaymentProviderRepository = new FileBasedPaymentProviderRepository(Paths.get("tmp"))
   val paymentProviderService = new PaymentProviderService(ws, paymentProviderRepository)
+  val authorizationService = new AppAuthorizationService(ws)
 
   def index(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
@@ -26,37 +28,18 @@ class HomeController @Inject()(val ws: WSClient, val controllerComponents: Contr
 
   def redirect(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     val code = Try((request.body \ "code").as[String])
+    val clientId = "158"
+    val clientSecret = "sD6KcaJu1Jsta9dL3eSPojj1KwJNCZ7M9QA09yKZqZHm1Vo3"
+
     code match {
       case Success(code) =>
-        ws
-          .url("https://www.tiendanube.com/apps/authorize/token")
-          .addHttpHeaders("Accept" -> "application/json")
-          .post(
-            Json.obj(
-              "client_id" -> "158",
-              "client_secret" -> "sD6KcaJu1Jsta9dL3eSPojj1KwJNCZ7M9QA09yKZqZHm1Vo3",
-              "grant_type" -> "authorization_code",
-              "code" -> code
-            ).toString()
-          )
-          .flatMap(response => {
-            val body = Json.parse(response.body)
-            (body \ "error") match {
-              case _  : JsDefined =>
-                Future(BadRequest(Json.parse(response.body)))
-              case _ =>
-                val paymentProviderResponse = for {
-                  appToken <- Try((body \ "access_token").as[String])
-                  storeId <- Try((body \ "user_id").as[String])
-                } yield createPaymentProvider(storeId, appToken)
-                paymentProviderResponse match {
-                  case Success(value) =>
-                    value
-                  case Failure(error) =>
-                    Future(BadRequest(error.getMessage))
-                }
+        authorizationService.authorize(code, clientId, clientSecret)
+          .flatMap {
+              case Failure(error) =>
+                Future(BadRequest(error.getMessage))
+              case Success((storeId, appToken)) =>
+                createPaymentProvider(storeId, appToken)
             }
-          })(ec)
       case Failure(_) =>
         Future(BadRequest(Json.obj("code" -> "Missing parameter")))
     }

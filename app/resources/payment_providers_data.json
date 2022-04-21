@@ -9,7 +9,7 @@
   "configuration_url": "https://mypayments.com/configuration",
   "support_url": "https://mypayments.com/support",
   "rates_url": "https://mypayments.com/rates",
-  "checkout_js_url": "https://localhost:9066/assets/javascripts/mypayments_checkout_script.min.js",
+  "checkout_js_url": "https://localhost:9443/assets/javascripts/mypayments_checkout_script.min.js",
   "supported_currencies": [
     "ARS",
     "BRL"

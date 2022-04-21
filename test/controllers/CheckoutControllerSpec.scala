@@ -32,15 +32,24 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
       new CheckoutController(ws, stubControllerComponents())
     }
 
-    def createPayload(total: Float, currency: String): FakeRequest[JsObject] = {
+    def createPayload(storeId: String, orderId: String, total: Float, currency: String): FakeRequest[JsObject] = {
       FakeRequest(POST, endpoint)
-        .withBody(Json.obj("total" -> total, "currency" -> currency))
+        .withBody(
+          Json.obj(
+            "storeId" -> storeId,
+            "orderId" -> orderId,
+            "total" -> total,
+            "currency" -> currency
+          )
+        )
     }
+
+    val payload = createPayload(storeId, orderId, 2, "ARS")
 
     "returns the created status response" in {
       paymentProviderRepository.save(paymentProvider)
       val controller = createController(Created(Json.obj("id" -> transactionId)))
-      val response = controller.redirect(storeId, orderId).apply(createPayload(2, "ARS"))
+      val response = controller.redirect().apply(payload)
 
       status(response) mustBe CREATED
       contentType(response) mustBe Some("application/json")
@@ -50,7 +59,7 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
     "returns the badRequest status response" in {
       paymentProviderRepository.save(paymentProvider)
       val controller = createController(BadRequest("ERROR"))
-      val response = controller.redirect(storeId, orderId).apply(createPayload(2, "ARS"))
+      val response = controller.redirect().apply(payload)
 
       status(response) mustBe BAD_REQUEST
       contentType(response) mustBe Some("text/plain")

@@ -26,6 +26,17 @@ class HomeController @Inject()(val ws: WSClient, val controllerComponents: Contr
     Ok(views.html.index())
   }
 
+  def checkoutUrl(): Action[JsValue] = Action(parse.json) { implicit request =>
+    val storeId = (request.body \ "storeId").as[String]
+    val orderId = (request.body \ "orderId").as[String]
+    val currency = (request.body \ "currency").as[String]
+    val total = (request.body \ "total").as[Float]
+    val baseUrl = "https://localhost:9443"
+    val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total"
+    val redirectUrl = s"$baseUrl/payment_redirect/?$params"
+    Ok(Json.obj("success" -> true, "redirect_url" -> redirectUrl))
+  }
+
   def redirect(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     val code = Try((request.body \ "code").as[String])
     val clientId = "158"

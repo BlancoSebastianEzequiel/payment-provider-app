@@ -5,9 +5,9 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.http.Status.{BAD_REQUEST, CREATED}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, Created}
-import play.api.test.Helpers.{POST, contentAsString, contentType, defaultAwaitTimeout, status, stubControllerComponents}
+import play.api.test.Helpers.{GET, POST, contentAsString, contentType, defaultAwaitTimeout, status, stubControllerComponents}
 import play.api.test.{FakeRequest, Injecting}
 import repositories.payment_provider_repository.{FileBasedPaymentProviderRepository, PaymentProvider, PaymentProviderRepository}
 
@@ -26,22 +26,14 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
 
     def createController(result: Result): CheckoutController = {
       val ws = MockWS {
-        case (POST, endpoint) =>
-          Action { result }
+        case (POST, endpoint) => Action { result }
       }
       new CheckoutController(ws, stubControllerComponents())
     }
 
-    def createPayload(storeId: Int, orderId: String, total: Float, currency: String): FakeRequest[JsObject] = {
-      FakeRequest(POST, endpoint)
-        .withBody(
-          Json.obj(
-            "storeId" -> storeId,
-            "orderId" -> orderId,
-            "total" -> total,
-            "currency" -> currency
-          )
-        )
+    def createPayload(storeId: Int, orderId: String, total: Float, currency: String): FakeRequest[AnyContent] = {
+      val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total"
+      FakeRequest(GET, s"/payment_redirect/?$params")
     }
 
     val payload = createPayload(storeId, orderId, 2, "ARS")

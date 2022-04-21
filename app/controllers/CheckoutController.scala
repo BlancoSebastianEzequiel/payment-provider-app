@@ -2,7 +2,7 @@ package controllers
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSClient
-import play.api.mvc.{Action, BaseController, ControllerComponents}
+import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import repositories.payment_provider_repository.{FileBasedPaymentProviderRepository, PaymentProviderRepository}
 import services.TransactionsService
 
@@ -15,11 +15,11 @@ class CheckoutController @Inject()(val ws: WSClient, val controllerComponents: C
   val paymentProviderRepository: PaymentProviderRepository = new FileBasedPaymentProviderRepository(Paths.get("tmp"))
   val transactionsService = new TransactionsService(ws, paymentProviderRepository)
 
-  def redirect(): Action[JsValue] = Action.async(parse.json) { implicit request =>
-    val storeId = (request.body \ "storeId").as[Int]
-    val orderId = (request.body \ "orderId").as[String]
-    val currency = (request.body \ "currency").as[String]
-    val total = (request.body \ "total").as[Float]
+  def redirect(): Action[AnyContent] = Action.async { implicit request =>
+    val storeId = request.queryString("storeId").head.toInt
+    val orderId = request.queryString("orderId").head
+    val currency = request.queryString("currency").head
+    val total = request.queryString("total").head.toFloat
     transactionsService.execute(storeId, orderId, total, currency).map {
       case Failure(exception) => BadRequest(exception.getMessage)
       case Success(transactionId) => Created(Json.obj("id" -> transactionId))

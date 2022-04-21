@@ -1,6 +1,6 @@
 package controllers
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import repositories.payment_provider_repository.{FileBasedPaymentProviderRepository, PaymentProviderRepository}

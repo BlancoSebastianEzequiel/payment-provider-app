@@ -11,7 +11,7 @@ import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
 import play.api.mvc.Result
-import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.mvc.Results.{BadRequest, Created}
 import play.api.test.Helpers.POST
 import repositories.payment_provider_repository.{PaymentProvider, PaymentProviderRepository}
 
@@ -33,7 +33,7 @@ class PaymentProviderServiceSpec extends PlaySpec with ScalaFutures with Mockito
 
   "create" should {
     "returns the new payment provider" in {
-      val service = createService(Ok(Json.obj("id" -> paymentProvider.id)))
+      val service = createService(Created(Json.obj("id" -> paymentProvider.id)))
       when(paymentProviderRepository.save(paymentProvider)).thenReturn(Done)
       val result = service.create(storeId, appToken)
       result.futureValue shouldEqual Success(paymentProvider)

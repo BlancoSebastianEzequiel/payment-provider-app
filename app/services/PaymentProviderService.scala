@@ -1,6 +1,6 @@
 package services
 
-import play.api.http.Status.OK
+import play.api.http.Status.{CREATED}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
 import repositories.payment_provider_repository.{PaymentProvider, PaymentProviderRepository}
@@ -21,7 +21,7 @@ class PaymentProviderService(restClient: WSClient, repository: PaymentProviderRe
       .post(Json.parse(new FileInputStream("app/resources/payment_providers_data.json")).toString())
       .map(response =>
         response.status match {
-          case OK =>
+          case CREATED =>
             val id = (Json.parse(response.body) \ "id").as[String]
             val paymentProvider = PaymentProvider(id, storeId, appToken)
             repository.save(paymentProvider)

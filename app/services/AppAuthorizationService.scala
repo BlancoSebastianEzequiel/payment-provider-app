@@ -7,17 +7,16 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 class AppAuthorizationService(restClient: WSClient)(implicit ec: ExecutionContext) {
-  def authorize(code: String, clientId: String, clientSecret: String): Future[Try[(String, String)]] = {
+  def authorize(code: String, clientId: String, clientSecret: String): Future[Try[(Int, String)]] = {
     restClient
-      .url("https://www.tiendanube.com/apps/authorize/token")
-      .addHttpHeaders("Accept" -> "application/json")
+      .url("https://www.localnube.com/apps/authorize/token")
       .post(
         Json.obj(
           "client_id" -> clientId,
           "client_secret" -> clientSecret,
           "grant_type" -> "authorization_code",
           "code" -> code
-        ).toString()
+        )
       )
       .map(response => {
         val body = Json.parse(response.body)
@@ -26,7 +25,7 @@ class AppAuthorizationService(restClient: WSClient)(implicit ec: ExecutionContex
             Failure(new Exception(response.body))
           case _ =>
             val appToken = (body \ "access_token").as[String]
-            val storeId = (body \ "user_id").as[String]
+            val storeId = (body \ "user_id").as[Int]
             Success(storeId, appToken)
         }
       })

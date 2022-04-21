@@ -17,13 +17,13 @@ import scala.util.Success
 
 class AppAuthorizationServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar {
   val accessToken = "accessToken"
-  val storeId = "storeId"
+  val storeId = 33
   val clientId = "clientId"
   val clientSecret = "clientSecret"
 
   def createService(result: Result): AppAuthorizationService = {
     val ws: WSClient = MockWS {
-      case (POST, "https://www.tiendanube.com/apps/authorize/token") => Action { result }
+      case (POST, "https://www.localnube.com/apps/authorize/token") => Action { result }
     }
     new AppAuthorizationService(ws)
   }

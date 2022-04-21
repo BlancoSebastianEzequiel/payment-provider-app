@@ -5,7 +5,7 @@
 
 # An example controller showing a sample home page
 GET / controllers.HomeController.index()
-POST /redirect controllers.HomeController.redirect()
+GET /redirect controllers.HomeController.redirect()
 POST /checkoutUrl controllers.HomeController.checkoutUrl()
 
 GET /payment_redirect controllers.CheckoutController.redirect()

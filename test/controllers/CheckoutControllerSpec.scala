@@ -15,14 +15,14 @@ import java.nio.file.Paths
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting with MockWSHelpers {
-  val storeId = "storeId"
+  val storeId = 2718
   val orderId = "orderId"
   val transactionId = "transactionId"
   val paymentProvider: PaymentProvider = PaymentProvider("id", storeId, "token")
   val paymentProviderRepository: PaymentProviderRepository = new FileBasedPaymentProviderRepository(Paths.get("tmp"))
 
   "POST redirect" should {
-    val endpoint = "https://api.localnube.com/v1/storeId/orders/orderId/transactions"
+    val endpoint = "https://api.localnube.com/v1/2718/orders/orderId/transactions"
 
     def createController(result: Result): CheckoutController = {
       val ws = MockWS {
@@ -32,7 +32,7 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
       new CheckoutController(ws, stubControllerComponents())
     }
 
-    def createPayload(storeId: String, orderId: String, total: Float, currency: String): FakeRequest[JsObject] = {
+    def createPayload(storeId: Int, orderId: String, total: Float, currency: String): FakeRequest[JsObject] = {
       FakeRequest(POST, endpoint)
         .withBody(
           Json.obj(

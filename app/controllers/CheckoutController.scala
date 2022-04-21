@@ -16,7 +16,7 @@ class CheckoutController @Inject()(val ws: WSClient, val controllerComponents: C
   val transactionsService = new TransactionsService(ws, paymentProviderRepository)
 
   def redirect(): Action[JsValue] = Action.async(parse.json) { implicit request =>
-    val storeId = (request.body \ "storeId").as[String]
+    val storeId = (request.body \ "storeId").as[Int]
     val orderId = (request.body \ "orderId").as[String]
     val currency = (request.body \ "currency").as[String]
     val total = (request.body \ "total").as[Float]

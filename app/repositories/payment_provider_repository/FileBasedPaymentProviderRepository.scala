@@ -9,14 +9,14 @@ import scala.concurrent.ExecutionContext
 class FileBasedPaymentProviderRepository(rootPath: Path)(implicit ec: ExecutionContext) extends PaymentProviderRepository {
   rootPath.toFile.mkdirs()
 
-  override def find(storeId: String): PaymentProvider = {
-    val file = new File(rootPath.toFile, storeId)
+  override def find(storeId: Int): PaymentProvider = {
+    val file = new File(rootPath.toFile, storeId.toString)
     val Array(id, _, token) = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath))).split(",")
     PaymentProvider(id, storeId, token)
   }
 
   override def save(paymentProvider: PaymentProvider): Done = {
-    val file = new File(rootPath.toFile, paymentProvider.storeId)
+    val file = new File(rootPath.toFile, paymentProvider.storeId.toString)
     val id = paymentProvider.id
     val storeId = paymentProvider.storeId
     val token = paymentProvider.token

@@ -19,14 +19,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success
 
 class PaymentProviderServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar {
-  val storeId = "storeId"
+  val storeId = 12
   val appToken = "appToken"
   val paymentProvider: PaymentProvider = PaymentProvider("paymentProviderId", storeId, appToken)
   val paymentProviderRepository: PaymentProviderRepository = mock[PaymentProviderRepository]
 
   def createService(result: Result): PaymentProviderService = {
     val ws: WSClient = MockWS {
-      case (POST, "https://api.localnube.com/v1/storeId/payment_providers") => Action { result }
+      case (POST, "https://api.localnube.com/v1/12/payment_providers") => Action { result }
     }
     new PaymentProviderService(ws, paymentProviderRepository)
   }

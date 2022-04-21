@@ -1,6 +1,6 @@
 package controllers
 
-import play.api.libs.json.{JsDefined, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 
 import javax.inject._
 import play.api.mvc._
@@ -10,7 +10,7 @@ import services.{AppAuthorizationService, PaymentProviderService}
 
 import java.nio.file.Paths
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -37,30 +37,30 @@ class HomeController @Inject()(val ws: WSClient, val controllerComponents: Contr
     Ok(Json.obj("success" -> true, "redirect_url" -> redirectUrl))
   }
 
-  def redirect(): Action[JsValue] = Action.async(parse.json) { implicit request =>
-    val code = Try((request.body \ "code").as[String])
+  def redirect(): Action[AnyContent] = Action.async { implicit request =>
+    val code = request.queryString.get("code")
     val clientId = "159"
     val clientSecret = "qDawDH34hvNLBZO9aOnTMpbcn2L394ovwdha8Hw87i3UlBaE"
 
     code match {
-      case Success(code) =>
-        authorizationService.authorize(code, clientId, clientSecret)
+      case Some(code) =>
+        authorizationService.authorize(code.head, clientId, clientSecret)
           .flatMap {
               case Failure(error) =>
-                Future(BadRequest(error.getMessage))
+                Future(BadRequest(Json.obj("authorization_failed" -> Json.parse(error.getMessage))))
               case Success((storeId, appToken)) =>
                 createPaymentProvider(storeId, appToken)
             }
-      case Failure(_) =>
+      case None =>
         Future(BadRequest(Json.obj("code" -> "Missing parameter")))
     }
   }
 
-  private def createPaymentProvider(storeId: String, appToken: String) = {
+  private def createPaymentProvider(storeId: Int, appToken: String) = {
     paymentProviderService.create(storeId, appToken).map {
       case Success(paymentProvider: PaymentProvider) =>
         Ok(Json.obj("id" -> paymentProvider.id))
-      case Failure(error) => BadRequest(error.getMessage)
+      case Failure(error) => BadRequest(Json.parse(error.getMessage))
     }
   }
 }

@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 class PaymentProviderService(restClient: WSClient, repository: PaymentProviderRepository)(implicit ec: ExecutionContext) {
-  def create(storeId: String, appToken: String): Future[Try[PaymentProvider]] = {
+  def create(storeId: Int, appToken: String): Future[Try[PaymentProvider]] = {
     restClient
       .url(s"https://api.localnube.com/v1/$storeId/payment_providers")
       .addHttpHeaders(

@@ -5,12 +5,12 @@ import org.scalatestplus.play.PlaySpec
 import repositories.payment_provider_repository.{PaymentProvider, PaymentProviderRepository}
 
 import java.nio.file.NoSuchFileException
-import java.util.UUID
+import java.util.Random
 
 trait PaymentProviderRepositoryTest extends PlaySpec with ScalaFutures {
   val repository: PaymentProviderRepository
 
-  def createId(): String = UUID.randomUUID.toString
+  def createId(): Int = (new Random).nextInt()
 
   "find" should {
     "return nothing if the id does not exist" in {

@@ -39,8 +39,8 @@ class HomeController @Inject()(val ws: WSClient, val controllerComponents: Contr
 
   def redirect(): Action[JsValue] = Action.async(parse.json) { implicit request =>
     val code = Try((request.body \ "code").as[String])
-    val clientId = "158"
-    val clientSecret = "sD6KcaJu1Jsta9dL3eSPojj1KwJNCZ7M9QA09yKZqZHm1Vo3"
+    val clientId = "159"
+    val clientSecret = "qDawDH34hvNLBZO9aOnTMpbcn2L394ovwdha8Hw87i3UlBaE"
 
     code match {
       case Success(code) =>

@@ -14,7 +14,7 @@ class PaymentProviderService(restClient: WSClient, repository: PaymentProviderRe
     restClient
       .url(s"https://api.localnube.com/v1/$storeId/payment_providers")
       .addHttpHeaders(
-        "Accept" -> "application/json",
+        "Content-Type" -> "application/json",
         "Authentication" -> s"bearer $appToken",
         "User-Agent" -> "MyApp test@tiendanube.com.com"
       )

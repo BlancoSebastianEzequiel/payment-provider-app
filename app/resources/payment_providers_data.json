@@ -1,0 +1,136 @@
+{
+  "name": "My Payments",
+  "public_name": "Pay with My Payments",
+  "description": "Some short description for merchants.",
+  "logo_urls": {
+    "400x120": "https://mypayments.com/logo1.png",
+    "160x100": "https://mypayments.com/logo2.png"
+  },
+  "configuration_url": "https://mypayments.com/configuration",
+  "support_url": "https://mypayments.com/support",
+  "rates_url": "https://mypayments.com/rates",
+  "checkout_js_url": "http://localhost:9066/assets/javascripts/mypayments_checkout_script.min.js",
+  "supported_currencies": [
+    "ARS",
+    "BRL"
+  ],
+  "supported_payment_methods": [
+    {
+      "payment_method_type": "credit_card",
+      "payment_methods": [
+        "visa",
+        "mastercard",
+        "amex",
+        "diners"
+      ],
+      "installments": {
+        "min_installment_value": [
+          {
+            "currency": "ARS",
+            "value": "100.00"
+          }
+        ],
+        "specification": [
+          {
+            "installments": 1,
+            "interest_rate": "0.00",
+            "applies_to": [
+              "bbva",
+              "itau",
+              "santander",
+              "galicia",
+              "icbc"
+            ]
+          },
+          {
+            "installments": 3,
+            "interest_rate": "0.00",
+            "applies_to": [
+              "bbva",
+              "itau"
+            ]
+          },
+          {
+            "installments": 6,
+            "interest_rate": "0.045",
+            "applies_to": [
+              "santander",
+              "galicia"
+            ]
+          },
+          {
+            "installments": 12,
+            "interest_rate": "0.15",
+            "applies_to": [
+              "icbc"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "payment_method_type": "debit_card",
+      "payment_methods": [
+        "visa_debit",
+        "maestro"
+      ]
+    },
+    {
+      "payment_method_type": "boleto",
+      "payment_methods": [
+        "boleto",
+        "banco_do_brasil",
+        "bradesco",
+        "caixa"
+      ]
+    }
+  ],
+  "rates": [
+    {
+      "payment_method_type": "credit_card",
+      "rates_definition": [
+        {
+          "percent_fee": "2.25",
+          "flat_fee": {
+            "value": "1.00",
+            "currency": "ARS"
+          },
+          "plus_tax": true,
+          "days_to_withdraw_money": 10
+        },
+        {
+          "percent_fee": "3.99",
+          "flat_fee": {
+            "value": "2.50",
+            "currency": "BRL"
+          },
+          "plus_tax": false,
+          "days_to_withdraw_money": 5
+        }
+      ]
+    }
+  ],
+  "checkout_payment_options": [
+    {
+      "id": "mypayments_redirect",
+      "name": "My Payments External",
+      "description": "Some description for external option",
+      "logo_url": "https://cdn.mypayments.com/apps/tiendanube/logo.png",
+      "supported_billing_countries": [
+        "AR",
+        "BR"
+      ],
+      "supported_payment_method_types": [
+        "credit_card",
+        "wire_transfer",
+        "wallet"
+      ]
+    }
+  ],
+  "features": [
+    "special_rates",
+    "transparent_checkout",
+    "gateway"
+  ],
+  "enabled": true
+}

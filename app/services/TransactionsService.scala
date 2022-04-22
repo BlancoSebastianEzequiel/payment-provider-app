@@ -37,8 +37,9 @@ class TransactionsService(restClient: WSClient, paymentProviderRepository: Payme
   private def buildData(total: Float, currency: String, payment_provider_id: String): JsValue = {
     var data = Json.parse(new FileInputStream("app/resources/transaction_data.json")).as[JsObject]
     data = data + ("payment_provider_id", JsString(payment_provider_id))
-    val amount = Json.obj("value" -> total, "currency" -> currency)
-    data = data + ("first_event", Json.obj("amount" -> amount))
+    var first_event = (data \ "first_event").get.as[JsObject]
+    first_event = first_event + ("amount", Json.obj("value" -> total.toString, "currency" -> currency))
+    data = data + ("first_event", first_event)
     data
   }
 }

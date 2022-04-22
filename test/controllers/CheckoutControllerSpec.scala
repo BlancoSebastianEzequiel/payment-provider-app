@@ -22,11 +22,9 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
   val paymentProviderRepository: PaymentProviderRepository = new FileBasedPaymentProviderRepository(Paths.get("tmp"))
 
   "POST redirect" should {
-    val endpoint = "https://api.localnube.com/v1/2718/orders/orderId/transactions"
-
     def createController(result: Result): CheckoutController = {
       val ws = MockWS {
-        case (POST, endpoint) => Action { result }
+        case (POST, "https://api.localnube.com/v1/2718/orders/3000/transactions") => Action { result }
       }
       new CheckoutController(ws, stubControllerComponents())
     }

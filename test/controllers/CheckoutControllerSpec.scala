@@ -16,7 +16,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting with MockWSHelpers {
   val storeId = 2718
-  val orderId = "orderId"
+  val orderId = 3000
   val transactionId = "transactionId"
   val paymentProvider: PaymentProvider = PaymentProvider("id", storeId, "token")
   val paymentProviderRepository: PaymentProviderRepository = new FileBasedPaymentProviderRepository(Paths.get("tmp"))
@@ -31,7 +31,7 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
       new CheckoutController(ws, stubControllerComponents())
     }
 
-    def createPayload(storeId: Int, orderId: String, total: Float, currency: String): FakeRequest[AnyContent] = {
+    def createPayload(storeId: Int, orderId: Int, total: Float, currency: String): FakeRequest[AnyContent] = {
       val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total"
       FakeRequest(GET, s"/payment_redirect/?$params")
     }

@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 class TransactionsService(restClient: WSClient, paymentProviderRepository: PaymentProviderRepository)(implicit ec: ExecutionContext) {
-  def execute(storeId: Int, orderId: String, total: Float, currency: String): Future[Try[String]] = {
+  def execute(storeId: Int, orderId: Int, total: Float, currency: String): Future[Try[String]] = {
     val paymentProvider = paymentProviderRepository.find(storeId)
     val appToken = paymentProvider.token
     val data = buildData(total, currency, paymentProvider.id)

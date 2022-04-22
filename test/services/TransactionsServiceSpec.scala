@@ -19,14 +19,14 @@ import scala.util.Success
 
 class TransactionsServiceSpec extends PlaySpec with ScalaFutures with MockitoSugar {
   val storeId = 33
-  val orderId = "orderId"
+  val orderId = 900
   val transactionId = "transactionId"
   val paymentProvider: PaymentProvider = PaymentProvider("id", storeId, "token")
   val paymentProviderRepository: PaymentProviderRepository = mock[PaymentProviderRepository]
 
   def createService(result: Result): TransactionsService = {
     val ws: WSClient = MockWS {
-      case (POST, "https://api.localnube.com/v1/33/orders/orderId/transactions") =>
+      case (POST, "https://api.localnube.com/v1/33/orders/900/transactions") =>
         Action { result }
     }
     new TransactionsService(ws, paymentProviderRepository)

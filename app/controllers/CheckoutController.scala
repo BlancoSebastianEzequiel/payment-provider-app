@@ -17,7 +17,7 @@ class CheckoutController @Inject()(val ws: WSClient, val controllerComponents: C
 
   def redirect(): Action[AnyContent] = Action.async { implicit request =>
     val storeId = request.queryString("storeId").head.toInt
-    val orderId = request.queryString("orderId").head
+    val orderId = request.queryString("orderId").head.toInt
     val currency = request.queryString("currency").head
     val total = request.queryString("total").head.toFloat
     transactionsService.execute(storeId, orderId, total, currency).map {

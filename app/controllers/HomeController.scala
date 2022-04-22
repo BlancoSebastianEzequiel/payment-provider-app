@@ -27,8 +27,8 @@ class HomeController @Inject()(val ws: WSClient, val controllerComponents: Contr
   }
 
   def checkoutUrl(): Action[JsValue] = Action(parse.json) { implicit request =>
-    val storeId = (request.body \ "storeId").as[String]
-    val orderId = (request.body \ "orderId").as[String]
+    val storeId = (request.body \ "storeId").as[Int]
+    val orderId = (request.body \ "orderId").as[Int]
     val currency = (request.body \ "currency").as[String]
     val total = (request.body \ "total").as[Float]
     val baseUrl = "https://localhost:9443"

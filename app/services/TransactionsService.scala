@@ -18,7 +18,7 @@ class TransactionsService(restClient: WSClient, paymentProviderRepository: Payme
     restClient
       .url(s"https://api.localnube.com/v1/$storeId/orders/$orderId/transactions")
       .addHttpHeaders(
-        "Accept" -> "application/json",
+        "Content-Type" -> "application/json",
         "User-Agent" -> "MyApp test@tiendanube.com.com",
         "Authentication" -> s"bearer $appToken"
       )

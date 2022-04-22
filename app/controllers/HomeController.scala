@@ -33,7 +33,7 @@ class HomeController @Inject()(val ws: WSClient, val controllerComponents: Contr
     val total = (request.body \ "total").as[Float]
     val baseUrl = "https://localhost:9443"
     val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total"
-    val redirectUrl = s"$baseUrl/payment_redirect/?$params"
+    val redirectUrl = s"$baseUrl/payment_redirect?$params"
     Ok(Json.obj("success" -> true, "redirect_url" -> redirectUrl))
   }
 

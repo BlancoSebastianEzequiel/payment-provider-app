@@ -31,8 +31,9 @@ class HomeController @Inject()(val ws: WSClient, val controllerComponents: Contr
     val orderId = (request.body \ "orderId").as[Int]
     val currency = (request.body \ "currency").as[String]
     val total = (request.body \ "total").as[Float]
+    val callbackUrls = (request.body \ "callbackUrls").as[JsValue]
     val baseUrl = "https://localhost:9443"
-    val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total"
+    val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total&callbackUrls=$callbackUrls"
     val redirectUrl = s"$baseUrl/payment_redirect?$params"
     Ok(Json.obj("success" -> true, "redirect_url" -> redirectUrl))
   }

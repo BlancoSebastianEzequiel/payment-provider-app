@@ -3,11 +3,11 @@ package controllers
 import mockws.{MockWS, MockWSHelpers}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
-import play.api.http.Status.{BAD_REQUEST, CREATED}
-import play.api.libs.json.{JsObject, Json}
+import play.api.http.Status.SEE_OTHER
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, Created}
-import play.api.test.Helpers.{GET, POST, contentAsString, contentType, defaultAwaitTimeout, status, stubControllerComponents}
+import play.api.test.Helpers.{GET, POST, contentType, defaultAwaitTimeout, status, stubControllerComponents}
 import play.api.test.{FakeRequest, Injecting}
 import repositories.payment_provider_repository.{FileBasedPaymentProviderRepository, PaymentProvider, PaymentProviderRepository}
 
@@ -30,7 +30,12 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
     }
 
     def createPayload(storeId: Int, orderId: Int, total: Float, currency: String): FakeRequest[AnyContent] = {
-      val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total"
+      val callbackUrls = Json.obj(
+        "success" -> "https://success.com",
+        "failure" -> "https://failure.com",
+        "cancel" -> "https://cancel.com",
+      )
+      val params = s"storeId=$storeId&orderId=$orderId&currency=$currency&total=$total&callbackUrls=$callbackUrls"
       FakeRequest(GET, s"/payment_redirect/?$params")
     }
 
@@ -41,9 +46,8 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
       val controller = createController(Created(Json.obj("id" -> transactionId)))
       val response = controller.redirect().apply(payload)
 
-      status(response) mustBe CREATED
-      contentType(response) mustBe Some("application/json")
-      contentAsString(response) mustEqual Json.obj("id" -> transactionId).toString()
+      status(response) mustBe SEE_OTHER
+      contentType(response) mustBe None
     }
 
     "returns the badRequest status response" in {
@@ -51,9 +55,8 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
       val controller = createController(BadRequest("ERROR"))
       val response = controller.redirect().apply(payload)
 
-      status(response) mustBe BAD_REQUEST
-      contentType(response) mustBe Some("text/plain")
-      contentAsString(response) mustEqual "ERROR"
+      status(response) mustBe SEE_OTHER
+      contentType(response) mustBe None
     }
   }
 }

@@ -2,7 +2,7 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
-import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
+import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents, Results}
 import repositories.payment_provider_repository.{FileBasedPaymentProviderRepository, PaymentProviderRepository}
 import services.TransactionsService
 
@@ -20,9 +20,16 @@ class CheckoutController @Inject()(val ws: WSClient, val controllerComponents: C
     val orderId = request.queryString("orderId").head.toInt
     val currency = request.queryString("currency").head
     val total = request.queryString("total").head.toFloat
+    val callbackUrls = Json.parse(request.queryString("callbackUrls").head)
+    val success = (callbackUrls \ "success").as[String]
+    val failure = (callbackUrls \ "failure").as[String]
     transactionsService.execute(storeId, orderId, total, currency).map {
-      case Failure(exception) => BadRequest(exception.getMessage)
-      case Success(transactionId) => Created(Json.obj("id" -> transactionId))
+      case Failure(exception) =>
+        BadRequest(exception.getMessage)
+        Results.Redirect(failure)
+      case Success(transactionId) =>
+        Created(Json.obj("id" -> transactionId))
+        Results.Redirect(success)
     }
   }
 }

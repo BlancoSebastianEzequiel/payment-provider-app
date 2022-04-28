@@ -25,10 +25,8 @@ class CheckoutController @Inject()(val ws: WSClient, val controllerComponents: C
     val failure = (callbackUrls \ "failure").as[String]
     transactionsService.execute(storeId, orderId, total, currency).map {
       case Failure(exception) =>
-        BadRequest(exception.getMessage)
         Results.Redirect(failure)
       case Success(transactionId) =>
-        Created(Json.obj("id" -> transactionId))
         Results.Redirect(success)
     }
   }

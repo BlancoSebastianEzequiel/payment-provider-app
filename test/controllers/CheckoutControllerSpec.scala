@@ -7,7 +7,7 @@ import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results.{BadRequest, Created}
-import play.api.test.Helpers.{GET, POST, contentType, defaultAwaitTimeout, status, stubControllerComponents}
+import play.api.test.Helpers.{GET, POST, contentType, redirectLocation, defaultAwaitTimeout, status, stubControllerComponents}
 import play.api.test.{FakeRequest, Injecting}
 import repositories.payment_provider_repository.{FileBasedPaymentProviderRepository, PaymentProvider, PaymentProviderRepository}
 
@@ -47,7 +47,7 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
       val response = controller.redirect().apply(payload)
 
       status(response) mustBe SEE_OTHER
-      contentType(response) mustBe None
+      redirectLocation(response) mustBe Some("https://success.com")
     }
 
     "returns the badRequest status response" in {
@@ -56,7 +56,7 @@ class CheckoutControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injec
       val response = controller.redirect().apply(payload)
 
       status(response) mustBe SEE_OTHER
-      contentType(response) mustBe None
+      redirectLocation(response) mustBe Some("https://failure.com")
     }
   }
 }
